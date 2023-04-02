@@ -16,7 +16,7 @@ ALIGN(16)
 		; x12 = # of trailing zeros of (u-v)
 
 		rbit	x12, x3				; reverse bit order
-		clz	x12, x12			; count leading zeros
+		clz	x12, x12				; count leading zeros
 
 		; if u >= v
 		; 	x3 = u-v
@@ -30,7 +30,7 @@ ALIGN(16)
 		csel	u0, v0, u0, cs			; u = min(u,v)		
 
 		; discard trailing zeros
-		lsr	v0, x3, x12			; logical shift right
+		lsr	v0, x3, x12				; logical shift right
 		subs	x3, u0, v0			
 		b.ne	L(top)				; if u0 != v0, loop
 
