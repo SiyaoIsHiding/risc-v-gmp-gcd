@@ -30,7 +30,7 @@ ALIGN(16)
 		csel	u0, v0, u0, cs			; u = min(u,v)		
 
 		; discard trailing zeros
-		lsr		v0, x3, x12		; logical shift right
+		lsr	v0, x3, x12			; logical shift right
 		subs	x3, u0, v0			
 		b.ne	L(top)				; if u0 != v0, loop
 
