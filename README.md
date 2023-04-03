@@ -1,6 +1,6 @@
-# RISC-V ASM Implementation of `mpn_gcd_11` for Rivos
+# RISCV64 ASM Implementation of `mpn_gcd_11` for Rivos
 
-In short, my codes are in `codes/risc_gcd.asm`. The tarball of the source codes is the `gmp-6.2.1.tar.gz` in this repo. You can skip to the [Tests and Performance](#tests-and-performance) section to reproduce the test result.
+In short, my codes are in `codes/risc_gcd.asm`. The `gmp-6.2.1.tar.gz` is the tarball of the source codes. You can skip to the [Tests and Performance](#tests-and-performance) section to reproduce the test result.
 
 The inputs of this function have to be two unsigned 64-bit **odd** integers. It will return the greatest common divisor using the binary gcd algorithm.
 
@@ -43,7 +43,7 @@ I will discuss the counting of trailing zeros in the Test and Performance sectio
 
 Their logic avoids branching by bit manipulation. 
 
-First, they obtain the high bit mask of `t`, where `t = u-v`. Then, they calculate the absolute value of `t` by `(t ^ mask) - mask`. They calculate the min of `u` and `v` by `v += (mask & (u-v))`.
+First, they obtain the high bit mask of `t`, where `t = u-v`. Then, they calculate the absolute value of `t` by `(t ^ mask) - mask`. They calculate the min of `u` and `v` and assign it to `v` by `v += (mask & (u-v))`.
 
 However, as the two inputs are unsigned integers, if `u-v > SIGNED_INT_MAX`, then `t` would start from 1 and the `mask` would become 111...111, as if `u-v < 0`. It is not correct. Therefore, they discard the least significant one bit first and then restore it in the end.
 
