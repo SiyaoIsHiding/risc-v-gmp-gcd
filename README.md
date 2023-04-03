@@ -1,6 +1,6 @@
 # RISCV64 ASM Implementation of `mpn_gcd_11` for Rivos
 
-In short, my codes are in `codes/risc_gcd.asm`. The `gmp-6.2.1.tar.gz` is the tarball of the source codes. You can skip to the [Tests and Performance](#tests-and-performance) section to reproduce the test result.
+In short, my codes are in `codes/risc_gcd.asm`. The `gmp-6.2.1.tar.gz` is the tarball of the source codes. You can skip to the [Test the Functionality](#test-the-functionality) section to reproduce the test result.
 
 The inputs of this function have to be two unsigned 64-bit **odd** integers. It will return the greatest common divisor using the binary gcd algorithm.
 
@@ -9,7 +9,8 @@ The inputs of this function have to be two unsigned 64-bit **odd** integers. It 
 + [Implementation](#implementation)
   + [Design Decisions](#design-decisions)
 + [Tests and Performance](#tests-and-performance)
-  + [Performance Comparison](#performance-comparison)
+  + [Test the Functionality](#test-the-functionality)
+  + [Test the Performance](#test-the-performance)
 
 
 ## Set up
@@ -37,7 +38,7 @@ Three important decisions when calculating:
 2. Min of two integers
 3. Count of trailing zeros
 
-I will discuss the counting of trailing zeros in the Test and Performance section in detail.
+I will discuss the counting of trailing zeros in the [Test the Performance](#test-the-performance) section in detail.
 
 **Generic C:**
 
@@ -105,6 +106,9 @@ In terms of counting the trailing zeros, I find `ctz` available in the risc-v bi
 
 Currently, I count the trailing zeros by an ugly for loop, which achieves the functionality but should be optimized later. My codes are in `codes/risc_gcd.asm`.
 ## Tests and Performance
+
+### Test the Functionality
+
 I modified the `tests/mpn/t-gcd_11.c` to add the CPU clock logging. You can find a copy of this test in this repository `codes/t-gcd_11.c`.
 
 Follow the following steps on a riscv64 linux environment to reproduce the test result:
@@ -151,7 +155,7 @@ Aborted
 
 This indicates my codes are loaded and failing as expected.
 
-### Performance Comparison
+### Test the Performance
 
 I wonder whether my codes can benefit the performance of this function.
 
