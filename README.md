@@ -7,6 +7,9 @@ I also understand what the generic C codes are doing now. I summarized their log
 
 My codes are in `codes/risc_double_conversion.asm`. The `gmp-6.2.1.tar.gz` is also updated.
 
+Updated on Apr 6:
+I just realize I can also achieve the same thing by single precision floating point conversion because the 32 bit of floating point has nothing to do with the 32 bit data path.... But I believe the performance should be the same, so I will leave this double conversion here :D.
+
 ## Generic C
 The implementation of `count_trailing_zeros` of the generic C codes is basically looking up in a table byte by byte, from the least significant byte. The more readable version of their assembly is in `codes/risc_from_generic.asm`.
 ```c
