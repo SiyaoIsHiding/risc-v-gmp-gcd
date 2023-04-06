@@ -20,9 +20,7 @@ PROLOGUE(mpn_gcd_11)
         srli    a1,a1,1 #, v
 # while (u != v)
         beq     a0,a1,L(end)       #, u, v,
-        la      t1,__gmpn_clz_tab               
-
-        li      t3,62           
+   
 L(top):
 # t = u - v;
         sub     a4,a0,a1        # t, u, v
@@ -42,17 +40,13 @@ L(top):
         andi	a6,a4,1 
         bne 	a6,x0,L(t_ends_1)
 
-# init for count_trailing_zeros   
-        andi    a6,a4,255
-# a5 is the previous v
-        sub		a5,a1,a7
-        beq     a6,zero,L(ctz_ge_8)    
-# if ctz < 8, which is 99% of the time
-        sub     a5,a5,a0        # -__ctz_x
+# count trailing zeros
+        neg     a5,a4   		# -__ctz_x
         and     a5,a5,a4        # __ctz_x & -__ctz_x
-        add     a5,t1,a5        # address of __clz_tab[__ctz_x & -__ctz_x]
-        lbu     a0,0(a5)        # __clz_tab[__ctz_x & -__ctz_x]
-        addiw   a0,a0,-1        # a0 = count of trailing zeros
+        fcvt.d.lu 	fa5, a5		# convert to double
+        fmv.x.d 	a5, fa5 	# load back to integer register
+        srli 	a5, a5, 52 		# discard the fragment
+        addi 	a0, a5, -1022 	# 1023 is the bias, 1 is the 1 in (u >> 1) >> c
 L(end_ctz):
 # u = (u >> 1) >> c;
         # srli    a5,a3,1 # already done by modifying the initial value of a0
@@ -72,27 +66,8 @@ L(t_ends_1):
         bne     a1,a0,L(top)    
         j 		L(end)
 
-# If the count of trailing zeros is greater than or equal to 8
-# 		a2 for __ctz_c
-# 		a4 for __ctz_x, aka t, aka |u-v|
-# 		a5 for intermediary value
-L(ctz_ge_8):
-        li      a2,7            # init __ctz_c
-L(loop_by_byte):
-        srli    a4,a4,8 
-        andi    a5,a4,255       # __ctz_x & 0xff  
-        beq     a5,zero,L(next_byte)    
-L(found_n_lookup):
-        neg     a5,a4   		# -__ctz_x
-        and     a5,a5,a4        # __ctz_x & -__ctz_x
-        add     a5,t1,a5        # address of __clz_tab[__ctz_x & -__ctz_x]
-        lbu     a0,0(a5)        # __clz_tab[__ctz_x & -__ctz_x]
-        addw    a0,a0,a2        # __ctz_c = __ctz_c + __clz_tab[__ctz_x & -__ctz_x];
-        j       L(end_ctz)      
-L(next_byte):
-        addiw   a2,a2,8  		# __ctz_c += 8
-        beq     a2,t3,L(found_n_lookup)       
-        j       L(loop_by_byte)           
+  
+       
 
 EPILOGUE()
 ASM_END()
