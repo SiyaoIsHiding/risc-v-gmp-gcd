@@ -1,14 +1,14 @@
 # RISCV64 ASM Implementation of `mpn_gcd_11` for Rivos
 Updated on Apr 5:
 
-Many thanks to the bit hack tutorial link. It is very helpful. The floating point converison implementation is inspiring and I managed to use a similar double precision floating point conversion approach in risc-v assembly.
+Many thanks for the bit hack tutorial link. It is very helpful. The floating point conversion implementation is inspiring and I managed to use a similar double precision floating point conversion approach in risc-v assembly.
 
-I also understand what the generic C codes are doing now. I summarized their logic and compared with my implementation.
+I also understand what the generic C codes are doing now. I summarized their logic and compared it with my implementation.
 
 My codes are in `codes/risc_double_conversion.asm`. The `gmp-6.2.1.tar.gz` is also updated.
 
 ## Generic C
-The implementation of `count_trailing_zeros` of the generic C codes are basically looking up in a table byte by byte, from the least siginficant byte. The more readable version of their assembly is in `codes/risc_from_generic.asm`.
+The implementation of `count_trailing_zeros` of the generic C codes is basically looking up in a table byte by byte, from the least significant byte. The more readable version of their assembly is in `codes/risc_from_generic.asm`.
 ```c
 #define count_trailing_zeros(count, x)                                  \
   do {                                                                  \
@@ -63,7 +63,7 @@ In the best case, this implementation needs at least 7 instructions executed sol
 ```
 
 ## RISCV64 ASM
-When I read through all the ctz implementations on the [bithack website](https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightLinear), I find an interesting solution which is to make use of the floating point conversion instruction and take the exponent value from it. Although the version on the website is a 32 bit one, I managed to implement the similar logic utilizing double precision floating point conversion instruction.
+When I read through all the ctz implementations on the [bithack website](https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightLinear), I find an interesting solution which is to make use of the floating point conversion instruction and take the exponent value from it. Although the version on the website is a 32-bit one, I managed to implement a similar logic utilizing double precision floating point conversion instruction.
 
 ```assembly
 # count trailing zeros
@@ -76,12 +76,12 @@ When I read through all the ctz implementations on the [bithack website](https:/
 ```
 It needs only 6 instructions with no branching in all cases. Therefore, I think it is the best among all implementations I've studied.
 
-In addition, 50% of the time, the last bit will be 1. So, I also considered adding a pruning strategy to skip the whole ctz process if the last bit is 1. My codes with the pruning strategy is in `codes/risc_gcd_pruning.asm`. However, it introduces branching. Assume the architecture is using the 5 stage pipeline, 2 cycles will be voided on each branch misprediction. Assume the last bit is completely random, branch prediction cannot help much. 
+In addition, 50% of the time, the last bit will be 1. So, I also considered adding a pruning strategy to skip the whole ctz process if the last bit is 1. My codes with the pruning strategy are in `codes`/risc_gcd_pruning.asm`. However, it introduces branching. Assume the architecture is using the 5 stage pipeline, 2 cycles will be voided on each branch misprediction. Assume the last bit is completely random, branch prediction cannot help much. 
 
 Overall, I think the pruning will not be worth it and I prefer the one implemented by floating point conversion with no branching involved.
 
 ------
-The following version of codes are now called `codes/risc_gcd_ugly.asm`. :P
+The following version of codes is now called `codes/risc_gcd_ugly.asm`. :P
 # Obsolete - RISCV64 ASM Implementation of `mpn_gcd_11` for Rivos
 In short, my codes are in `codes/risc_gcd.asm`. The `gmp-6.2.1.tar.gz` is the tarball of the source codes. You can skip to the [Test the Functionality](#test-the-functionality) section to reproduce the test result.
 
