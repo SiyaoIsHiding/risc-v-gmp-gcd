@@ -19,7 +19,7 @@ int ctz(int64_t a) {
  * GMP's arm64 implementation
  */
 int64_t arm_gcd(int64_t u, int64_t v) {
-    int k; // t0, # of common trailing zero
+    int k; // t0, # of trailing zero
     int64_t x3; // t1, the difference
     x3 = u - v;
     while (x3 != 0) {
