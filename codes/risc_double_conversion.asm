@@ -38,7 +38,7 @@ L(top):
         and     a5,a5,a4        # __ctz_x & -__ctz_x
         fcvt.d.lu 	fa5, a5		# convert to double
         fmv.x.d 	a5, fa5 	# load back to integer register
-        srli 	a5, a5, 52 		# discard the fragment
+        srli 	a5, a5, 52 		# discard the fraction
         addi 	a5, a5, -1022 	# 1023 is the bias, 1 is the 1 in (u >> 1) >> c
 
 # u = (u >> 1) >> c;
