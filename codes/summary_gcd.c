@@ -27,7 +27,7 @@ int64_t arm_gcd(int64_t u, int64_t v) {
         x3 = abs(x3);
         u = u < v ? u : v;
         v = (unsigned) x3 >> k;
-        x3 = abs(u - v);
+        x3 = u - v;
     }
     return u;
 }
